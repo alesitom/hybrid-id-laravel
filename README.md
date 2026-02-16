@@ -1,0 +1,128 @@
+# HybridId for Laravel
+
+Laravel integration for [HybridId](https://github.com/alesitom/hybridId_package) — compact, time-sortable unique IDs as a drop-in UUID replacement for Eloquent models.
+
+## Installation
+
+```bash
+composer require alesitom/hybrid-id-laravel
+```
+
+The service provider is auto-discovered. No manual registration needed.
+
+## Quick Start
+
+Add the `HasHybridId` trait to any model:
+
+```php
+use HybridId\Laravel\HasHybridId;
+
+class User extends Model
+{
+    use HasHybridId;
+
+    protected static string $idPrefix = 'usr';
+}
+```
+
+That's it. New models automatically get a HybridId on creation:
+
+```php
+$user = User::create(['name' => 'Jane']);
+$user->id;  // usr_0VBFDQz4CYRtntu09sbf
+```
+
+## Migration
+
+Your primary key column must be a string, not an auto-incrementing integer:
+
+```php
+Schema::create('users', function (Blueprint $table) {
+    $table->string('id', 29)->collation('ascii_bin')->primary();
+    // ... other columns
+    $table->timestamps();
+});
+```
+
+Use `ascii_bin` collation on MySQL/MariaDB to preserve case-sensitive ordering. See [core docs](https://github.com/alesitom/hybridId_package#collation-important-for-mysqlmariadb) for details.
+
+## Configuration
+
+Publish the config file:
+
+```bash
+php artisan vendor:publish --tag=hybrid-id-config
+```
+
+This creates `config/hybrid-id.php`:
+
+```php
+return [
+    'profile' => env('HYBRID_ID_PROFILE', 'standard'),
+    'node' => env('HYBRID_ID_NODE'),
+    'require_explicit_node' => (bool) env('HYBRID_ID_REQUIRE_NODE', false),
+];
+```
+
+Set `HYBRID_ID_REQUIRE_NODE=1` in production to enforce explicit node assignment.
+
+## Dependency Injection
+
+The service provider binds `IdGenerator` as a singleton. Inject it anywhere:
+
+```php
+use HybridId\IdGenerator;
+
+class OrderService
+{
+    public function __construct(
+        private readonly IdGenerator $idGenerator,
+    ) {}
+
+    public function createOrder(): Order
+    {
+        return Order::create([
+            'id' => $this->idGenerator->generate('ord'),
+            'status' => 'pending',
+        ]);
+    }
+}
+```
+
+## Prefixes
+
+Set `$idPrefix` on your model for Stripe-style self-documenting IDs:
+
+```php
+class Order extends Model
+{
+    use HasHybridId;
+    protected static string $idPrefix = 'ord';
+}
+
+class Invoice extends Model
+{
+    use HasHybridId;
+    protected static string $idPrefix = 'inv';
+}
+```
+
+Omit `$idPrefix` for unprefixed IDs.
+
+## How It Works
+
+- `HasHybridId` hooks into Eloquent's `creating` event
+- Sets `$keyType = 'string'` and `$incrementing = false` automatically
+- If the model's primary key is empty at creation time, generates a HybridId
+- If the primary key is already set (e.g., manual assignment), it is not overwritten
+- The generator instance is resolved from the container (singleton)
+
+## Requirements
+
+- PHP >= 8.3
+- Laravel 11 or 12
+- [alesitom/hybrid-id](https://github.com/alesitom/hybridId_package) ^3.2 (installed automatically)
+
+## License
+
+MIT

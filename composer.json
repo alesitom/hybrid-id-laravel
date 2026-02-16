@@ -1,0 +1,36 @@
+{
+    "name": "alesitom/hybrid-id-laravel",
+    "description": "Laravel integration for HybridId — Eloquent trait, service provider, and config",
+    "keywords": ["hybrid-id", "laravel", "eloquent", "uuid-alternative", "unique-id", "time-sortable"],
+    "license": "MIT",
+    "type": "library",
+    "require": {
+        "php": "^8.3",
+        "alesitom/hybrid-id": "^3.2",
+        "illuminate/database": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "HybridId\\Laravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "HybridId\\Laravel\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HybridId\\Laravel\\HybridIdServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
