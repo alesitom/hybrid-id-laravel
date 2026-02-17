@@ -17,10 +17,17 @@ class HybridIdServiceProvider extends ServiceProvider
         $this->app->singleton(IdGenerator::class, function ($app) {
             $config = $app['config']['hybrid-id'];
 
+            $blindSecret = null;
+            if (!empty($config['blind_secret'])) {
+                $blindSecret = base64_decode($config['blind_secret'], true) ?: null;
+            }
+
             return new HybridIdGenerator(
                 profile: $config['profile'] ?? 'standard',
                 node: $config['node'] ?? null,
                 requireExplicitNode: $config['require_explicit_node'] ?? false,
+                blind: $config['blind'] ?? false,
+                blindSecret: $blindSecret,
             );
         });
 

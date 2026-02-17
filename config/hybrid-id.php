@@ -40,4 +40,31 @@ return [
 
     'require_explicit_node' => (bool) env('HYBRID_ID_REQUIRE_NODE', false),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Blind Mode
+    |--------------------------------------------------------------------------
+    |
+    | When true, timestamps and node identifiers are replaced with
+    | HMAC-derived opaque values. IDs remain the same length but are
+    | no longer chronologically sortable.
+    |
+    */
+
+    'blind' => (bool) env('HYBRID_ID_BLIND', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blind Secret
+    |--------------------------------------------------------------------------
+    |
+    | Optional base64-encoded secret (>= 32 raw bytes) for blind mode.
+    | When set, enables key rotation, multi-instance coordination,
+    | and authorized auditing. When null, a random secret is generated
+    | per instance.
+    |
+    */
+
+    'blind_secret' => env('HYBRID_ID_BLIND_SECRET'),
+
 ];
