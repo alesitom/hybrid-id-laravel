@@ -1,0 +1,10 @@
+parameters:
+    level: max
+    paths:
+        - src
+    tmpDir: .phpstan.cache
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        - '#Trait .+ is used zero times and is not analysed#'
+        - '#Cannot access offset .+ on .+Application#'
+        - '#Cannot access offset .+ on mixed#'
