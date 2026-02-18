@@ -3,6 +3,7 @@
 Laravel integration for [HybridId](https://github.com/alesitom/hybridId_package) — compact, time-sortable unique IDs as a drop-in UUID replacement for Eloquent models.
 
 [![Tests](https://img.shields.io/github/actions/workflow/status/alesitom/hybrid-id-laravel/ci.yml?style=flat-square&label=tests)](https://github.com/alesitom/hybrid-id-laravel/actions)
+[![Coverage](https://img.shields.io/codecov/c/github/alesitom/hybrid-id-laravel?style=flat-square)](https://codecov.io/gh/alesitom/hybrid-id-laravel)
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%20max-blue?style=flat-square)](https://phpstan.org/)
 
 ## Installation
