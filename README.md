@@ -2,6 +2,9 @@
 
 Laravel integration for [HybridId](https://github.com/alesitom/hybridId_package) — compact, time-sortable unique IDs as a drop-in UUID replacement for Eloquent models.
 
+[![Tests](https://img.shields.io/github/actions/workflow/status/alesitom/hybrid-id-laravel/ci.yml?style=flat-square&label=tests)](https://github.com/alesitom/hybrid-id-laravel/actions)
+[![PHPStan](https://img.shields.io/badge/PHPStan-level%20max-blue?style=flat-square)](https://phpstan.org/)
+
 ## Installation
 
 ```bash
@@ -61,10 +64,25 @@ return [
     'profile' => env('HYBRID_ID_PROFILE', 'standard'),
     'node' => env('HYBRID_ID_NODE'),
     'require_explicit_node' => (bool) env('HYBRID_ID_REQUIRE_NODE', false),
+    'blind' => (bool) env('HYBRID_ID_BLIND', false),
+    'blind_secret' => env('HYBRID_ID_BLIND_SECRET'),
 ];
 ```
 
 Set `HYBRID_ID_REQUIRE_NODE=1` in production to enforce explicit node assignment.
+
+## Blind Mode
+
+Enable blind mode to HMAC-hash timestamps and node info, making creation time unextractable:
+
+```env
+HYBRID_ID_BLIND=true
+HYBRID_ID_BLIND_SECRET=base64encodedvalue...
+```
+
+Generate a secret: `php -r "echo base64_encode(random_bytes(32)) . PHP_EOL;"`
+
+See [Blind Mode docs](https://github.com/alesitom/hybridId_package/blob/main/docs/blind-mode.md) for details.
 
 ## Dependency Injection
 
@@ -121,7 +139,7 @@ Omit `$idPrefix` for unprefixed IDs.
 
 - PHP 8.3, 8.4, or 8.5
 - Laravel 11 or 12
-- [alesitom/hybrid-id](https://github.com/alesitom/hybridId_package) ^3.2 (installed automatically)
+- [alesitom/hybrid-id](https://github.com/alesitom/hybridId_package) ^4.1 (installed automatically)
 
 ## License
 

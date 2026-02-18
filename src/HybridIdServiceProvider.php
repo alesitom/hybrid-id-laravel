@@ -14,19 +14,20 @@ class HybridIdServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/hybrid-id.php', 'hybrid-id');
 
-        $this->app->singleton(IdGenerator::class, function ($app) {
+        $this->app->singleton(IdGenerator::class, function (\Illuminate\Contracts\Foundation\Application $app) {
+            /** @var array{profile: string, node: ?string, require_explicit_node: bool, blind: bool, blind_secret: ?string} $config */
             $config = $app['config']['hybrid-id'];
 
             $blindSecret = null;
             if (!empty($config['blind_secret'])) {
-                $blindSecret = base64_decode($config['blind_secret'], true) ?: null;
+                $blindSecret = base64_decode((string) $config['blind_secret'], true) ?: null;
             }
 
             return new HybridIdGenerator(
-                profile: $config['profile'] ?? 'standard',
-                node: $config['node'] ?? null,
-                requireExplicitNode: $config['require_explicit_node'] ?? false,
-                blind: $config['blind'] ?? false,
+                profile: (string) ($config['profile'] ?? 'standard'),
+                node: isset($config['node']) ? (string) $config['node'] : null,
+                requireExplicitNode: (bool) ($config['require_explicit_node'] ?? false),
+                blind: (bool) ($config['blind'] ?? false),
                 blindSecret: $blindSecret,
             );
         });
