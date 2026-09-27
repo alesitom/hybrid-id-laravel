@@ -15,8 +15,9 @@ jobs:
     strategy:
       matrix:
         php-version: ['8.3', '8.4', '8.5']
+        laravel: ['12', '13']
 
-    name: PHP ${{ matrix.php-version }}
+    name: PHP ${{ matrix.php-version }} / Laravel ${{ matrix.laravel }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -27,8 +28,13 @@ jobs:
           php-version: ${{ matrix.php-version }}
           coverage: none
 
+      # No lockfile is committed, so without this pin Composer always resolves
+      # the newest Laravel and older declared lines go untested.
+      - name: Pin Laravel ${{ matrix.laravel }}
+        run: composer require "illuminate/database:^${{ matrix.laravel }}.0" "illuminate/support:^${{ matrix.laravel }}.0" --no-update --no-interaction
+
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        run: composer update --no-interaction --prefer-dist
 
       - name: Audit dependencies
         run: composer audit
